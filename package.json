@@ -1,0 +1,19 @@
+{
+  "name": "online-exam-portal",
+  "version": "1.0.0",
+  "description": "<!-- Hey, thanks for using the awesome-readme-template template.   If you have any enhancements, then fork this project and create a pull request  or just open an issue with the label \"enhancement\". Don't forget to give this project a star for additional support ;) Maybe you can mention me or this repo in the acknowledgements too --> <div align=\"center\">   <h1>Online Exam Portal</h1>   <p>     A Online Exam portal website with backend in Nodejs and frontend in React js    </p>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chintan-golakiya/online-exam-portal.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chintan-golakiya/online-exam-portal/issues"
+  },
+  "homepage": "https://github.com/chintan-golakiya/online-exam-portal#readme"
+}

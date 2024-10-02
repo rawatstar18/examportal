@@ -1,4 +1,4 @@
-version: '1'
+version: '3.8'  # Updated to a more recent version for better features
 
 services:
   backend:
@@ -13,51 +13,53 @@ services:
       - 5000:5000
     links:
       - mongodb
-
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   mongodb:
-    image: mongo
+    image: mongo:latest
     ports:
-     - 27018:27017
+      - 27018:27017
     environment:
-     - MONGO_INITDB_ROOT_USERNAME=admin
-     - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     volumes:
-     - mongo-data:/data/db
+      - mongo-data:/data/db
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      test: echo 'db.runCommand("ping").ok' | mongo --username ${MONGO_INITDB_ROOT_USERNAME} --password ${MONGO_INITDB_ROOT_PASSWORD} mongo:27017/test --quiet
       interval: 10s
       timeout: 10s
       retries: 5
       start_period: 40s
 
   mongo-express:
-    image: mongo-express
+    image: mongo-express:latest
     restart: always
     ports:
-     - 8080:8081
+      - 8080:8081
     environment:
-     - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
-     - ME_CONFIG_MONGODB_ADMINPASSWORD=password
-     - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - ME_CONFIG_MONGODB_SERVER=mongodb
     depends_on:
-     - "mongodb"
-      
-  
+      - mongodb
+
   frontend:
     container_name: frontend-app
     image: frontend-app:1.0
     environment:
       - NODE_ENV=docker
       - REACT_APP_API_BASE_URL=http://backend:5000
-      
     build: 
       context: frontend
       dockerfile: Dockerfile
     ports:
-     - 3100:3000
+      - 3100:3000
     depends_on:
-     - backend
+      - backend
 
   user-frontend:
     container_name: user-frontend-app
@@ -68,12 +70,8 @@ services:
     build:
       context: user-portal-frontend
       dockerfile: Dockerfile
-
     ports:
-
       - 3200:3000
-
-
     depends_on:
       - backend
       - frontend
@@ -81,3 +79,4 @@ services:
 volumes:
   mongo-data:
     driver: local
+
